@@ -1,1 +1,3 @@
-db_url: postgresql://postgres:postgres@localhost/postgres
+pg_url: postgres://postgres:postgres@localhost:5435/postgres
+env: production
+jwt_secret: ...

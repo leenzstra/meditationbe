@@ -1,0 +1,48 @@
+version: '3'
+
+tasks:
+  all:
+    cmds:
+      - task: build
+
+  build:
+    cmds:
+      - echo "Building..."
+      - go build -o main.exe cmd/main.go
+
+  run:
+    cmds:
+      - go run cmd/main.go
+
+  docker-run:
+    cmds:
+      - docker-compose up -d
+
+  docker-down:
+    cmds:
+      - docker-compose down
+
+  test:
+    cmds:
+      - echo "Testing..."
+      - go test ./... -v
+
+  itest:
+    cmds:
+      - echo "Running integration tests..."
+      - go test ./internal/database -v
+
+  clean:
+    cmds:
+      - echo "Cleaning..."
+      - rm -f main.exe
+
+  watch:
+    cmds:
+      - air
+
+  migrate:
+    vars: 
+      database: postgres://postgres:postgres@localhost:5435/postgres?sslmode=disable
+    cmds:
+      - bin/migrate -database {{.database}} -path migrations/ {{.CLI_ARGS}}
