@@ -29,4 +29,5 @@ tmp/
 main
 *templ.go
 
+Dockerfile
 audio

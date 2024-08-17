@@ -6,6 +6,7 @@ import (
 	"meditationbe/internal/server"
 	"go.uber.org/zap"
 	"log"
+	_ "meditationbe/docs"
 )
 
 func Run() {
@@ -27,6 +28,14 @@ func Run() {
 	server.NewRouter(db, logger).Listen(":8080")
 }
 
+//	@title						Meditation API
+//	@version					0.0.1
+//	@description				Meditation API spec
+//	@host						localhost:8080
+//	@BasePath					/api
+//	@securityDefinitions.apikey	BearerToken
+//	@in							header 
+//	@name						Authorization
 func main() {
 	Run()
 }

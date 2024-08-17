@@ -11,6 +11,12 @@ services:
       - "5435:5432"
     volumes:
       - psql_volume:/var/lib/postgresql/data
+  server:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5435:5432"
 
 volumes:
   psql_volume:

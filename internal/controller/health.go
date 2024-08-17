@@ -6,8 +6,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+type healthResponse struct {
+	Status string `json:"status"`
+	User   string `json:"user"`
+}
+
+// Status godoc
+//	@Summary		API ststus
+//	@Description	get API status
+//	@Tags			health
+//	@Produce		json
+//	@Success		200	{object}	controller.healthResponse
+//	@Router			/health [get]
 func (r *RootController) Status(c *fiber.Ctx) error {
-	var user string 
+	var user string
 
 	token, err := utils.TokenFromHeaders(c)
 	if err != nil {
@@ -21,8 +33,8 @@ func (r *RootController) Status(c *fiber.Ctx) error {
 		}
 	}
 
-	return c.JSON(fiber.Map{
-		"status": "ok",
-		"user":   user,
+	return c.JSON(healthResponse{
+		Status: "ok",
+		User:   user,
 	})
 }

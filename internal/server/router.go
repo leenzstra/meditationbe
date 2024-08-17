@@ -11,6 +11,7 @@ import (
 	flog "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"go.uber.org/zap"
+	"github.com/gofiber/swagger" // swagger handler
 )
 
 func NewRouter(db *database.Database, logger *zap.Logger) *fiber.App {
@@ -20,6 +21,9 @@ func NewRouter(db *database.Database, logger *zap.Logger) *fiber.App {
 
 	router.Use(flog.New())
 	router.Use(recover.New())
+	router.Get("/swagger/*", swagger.HandlerDefault)
+
+	router.Static("/static/audio", "audio")
 
 	setupRoutes(router, db, logger)
 

@@ -46,3 +46,8 @@ tasks:
       database: postgres://postgres:postgres@localhost:5435/postgres?sslmode=disable
     cmds:
       - bin/migrate -database {{.database}} -path migrations/ {{.CLI_ARGS}}
+
+  swag:
+    cmds:
+      - swag init -d ".\cmd\,internal/dto,internal/domain,internal/controller"
+      - swag fmt 

@@ -1,0 +1,3 @@
+pg_url: postgres://postgres:postgres@psql:5435/postgres
+env: development
+jwt_secret: secret
