@@ -16,7 +16,11 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5435:5432"
+      - "8080:8080"
+    environment:
+      MED_PG_URL: asd
+      MED_ENV: production
+      MED_JWT_SECRET: asd
 
 volumes:
   psql_volume:

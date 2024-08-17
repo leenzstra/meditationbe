@@ -6,21 +6,30 @@ import (
 	"github.com/spf13/viper"
 )
 
+type EnvType string
+
+const (
+	Development EnvType = "development"
+	Production  EnvType = "production"
+	Local       EnvType = "local"
+)
+
 type Config struct {
-	PgUrl     string `mapstructure:"pg_url"`
-	Env       string `mapstructure:"env"`
-	JWTSecret string `mapstructure:"jwt_secret"`
+	PgUrl     string `mapstructure:"MED_PG_URL"`
+	Env       string `mapstructure:"MED_ENV"`
+	JWTSecret string `mapstructure:"MED_JWT_SECRET"`
 }
 
 var config *Config
 
-func Init(env string) {
+func Init(env EnvType) {
 	var err error
- 
 	cfg := viper.New()
-	cfg.SetConfigType("yaml")
+
+	cfg.SetConfigType("env")
 	cfg.AddConfigPath("config/")
-	cfg.SetConfigName(env)
+	cfg.SetConfigName(string(env))
+	cfg.AutomaticEnv()
 
 	err = cfg.ReadInConfig()
 	if err != nil {
@@ -33,6 +42,7 @@ func Init(env string) {
 	}
 
 	log.Printf("%v", config)
+
 }
 
 func GetConfig() *Config {

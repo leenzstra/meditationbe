@@ -1,3 +1,0 @@
-pg_url: postgres://postgres:postgres@localhost:5435/postgres
-env: production
-jwt_secret: ...

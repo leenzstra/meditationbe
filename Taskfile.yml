@@ -8,11 +8,11 @@ tasks:
   build:
     cmds:
       - echo "Building..."
-      - go build -o main.exe cmd/main.go
+      - go build -o main.exe cmd/local/main.go
 
   run:
     cmds:
-      - go run cmd/main.go
+      - go run cmd/local/main.go
 
   docker-run:
     cmds:
@@ -49,5 +49,5 @@ tasks:
 
   swag:
     cmds:
-      - swag init -d ".\cmd\,internal/dto,internal/domain,internal/controller"
+      - swag init -d ".\cmd\local\,internal/dto,internal/domain,internal/controller"
       - swag fmt 

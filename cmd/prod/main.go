@@ -12,10 +12,10 @@ import (
 func Run() {
 	var err error
 
-	config.Init("development")
+	config.Init(config.Production)
     cfg := config.GetConfig()
 
-	logger, err := zap.NewDevelopment()
+	logger, err := zap.NewProduction()
 	if err != nil {
 		log.Fatalf("failed to init logger: %v", err)
 	}
@@ -25,7 +25,7 @@ func Run() {
 		log.Fatalf("failed to init db: %v", err)
 	}
 
-	server.NewRouter(db, logger).Listen(":8080")
+	server.NewRouter(db, logger).Listen(":80")
 }
 
 //	@title						Meditation API
