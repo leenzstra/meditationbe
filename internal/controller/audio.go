@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"bytes"
 	"context"
 	"meditationbe/internal/domain"
 	"meditationbe/internal/dto"
@@ -36,7 +37,12 @@ func (r *RootController) UploadAudio(c *fiber.Ctx) error {
 	}
 	defer file.Close()
 
-	err = r.audioService.Add(context.Background(), &payload, file)
+	buf := new(bytes.Buffer)
+	if _, err := buf.ReadFrom(file); err!= nil {
+		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+	}
+
+	err = r.audioService.Add(context.Background(), &payload, buf)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}

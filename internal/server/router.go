@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+	"meditationbe/config"
 	"meditationbe/internal/controller"
 	"meditationbe/internal/database"
 	"meditationbe/internal/middleware"
@@ -10,8 +12,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	flog "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"go.uber.org/zap"
 	"github.com/gofiber/swagger" // swagger handler
+	"github.com/supabase-community/storage-go"
+	"go.uber.org/zap"
 )
 
 func NewRouter(db *database.Database, logger *zap.Logger) *fiber.App {
@@ -23,7 +26,7 @@ func NewRouter(db *database.Database, logger *zap.Logger) *fiber.App {
 	router.Use(recover.New())
 	router.Get("/swagger/*", swagger.HandlerDefault)
 
-	router.Static("/static/audio", "audio")
+	// router.Static("/static/audio", "audio")
 
 	setupRoutes(router, db, logger)
 
@@ -31,13 +34,17 @@ func NewRouter(db *database.Database, logger *zap.Logger) *fiber.App {
 }
 
 func setupRoutes(router *fiber.App, db *database.Database, logger *zap.Logger) {
+	cfg := config.GetConfig()
 	// user related
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
 
 	// audio related
 	audioRepo := repository.NewAudioRepository(db)
-	audioUploader := service.NewServerAudioUploader("./audio")
+
+	storage := storage_go.NewClient(fmt.Sprintf("https://%s/storage/v1", cfg.S3Endpoint), cfg.S3JWT, nil)
+
+	audioUploader := service.NewS3AudioUploader(storage, cfg.S3BucketId)
 	audioService := service.NewAudioService(audioRepo, audioUploader)
 
 	// auth related

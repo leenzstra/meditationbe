@@ -51,7 +51,7 @@ definitions:
       uuid:
         type: string
     type: object
-host: localhost:8080
+host: meditationbe.onrender.com
 info:
   contact: {}
   description: Meditation API spec

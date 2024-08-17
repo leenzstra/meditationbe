@@ -18,9 +18,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      MED_PG_URL: asd
-      MED_ENV: production
-      MED_JWT_SECRET: asd
+      MED_PG_URL: 
+      MED_ENV: 
+      MED_JWT_SECRET: 
 
 volumes:
   psql_volume:

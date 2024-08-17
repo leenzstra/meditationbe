@@ -6,7 +6,7 @@
         "contact": {},
         "version": "0.0.1"
     },
-    "host": "localhost:8080",
+    "host": "meditationbe.onrender.com",
     "basePath": "/api",
     "paths": {
         "/audio/delete": {

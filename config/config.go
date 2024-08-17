@@ -18,6 +18,12 @@ type Config struct {
 	PgUrl     string `mapstructure:"MED_PG_URL"`
 	Env       string `mapstructure:"MED_ENV"`
 	JWTSecret string `mapstructure:"MED_JWT_SECRET"`
+
+	S3Endpoint  string `mapstructure:"MED_S3_ENDPOINT"`
+	S3AccessKey string `mapstructure:"MED_S3_ACCESS_KEY"`
+	S3SecretKey string `mapstructure:"MED_S3_SECRET_KEY"`
+	S3BucketId  string `mapstructure:"MED_S3_BUCKET_ID"`
+	S3JWT       string `mapstructure:"MED_S3_JWT"`
 }
 
 var config *Config
