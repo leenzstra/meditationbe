@@ -31,7 +31,7 @@ func Run() {
 //	@title						Meditation API
 //	@version					0.0.1
 //	@description				Meditation API spec
-//	@host						localhost:80
+//	@host						127.0.0.1:80
 //	@BasePath					/api
 //	@securityDefinitions.apikey	BearerToken
 //	@in							header 
