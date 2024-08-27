@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"errors"
 	"meditationbe/internal/dto"
 	tgauth "meditationbe/internal/tg_auth"
 
@@ -20,7 +19,7 @@ import (
 //	@Router		/auth/telegram [get]
 func (r *RootController) TelegramAuth(c *fiber.Ctx) error {
 	payload := tgauth.Credentials{}
-	if err := c.QueryParser(&payload); err != nil && !errors.Is(err, fiber.ErrUnprocessableEntity) {
+	if err := c.QueryParser(&payload); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
 

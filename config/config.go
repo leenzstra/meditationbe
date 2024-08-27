@@ -32,7 +32,7 @@ var config *Config
 
 func Init(env EnvType) {
 	var err error
-	cfg := viper.New() 
+	cfg := viper.New()
 
 	cfg.SetConfigType("env")
 	cfg.AddConfigPath("config/")
