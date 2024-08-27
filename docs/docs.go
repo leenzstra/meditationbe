@@ -207,7 +207,7 @@ const docTemplate = `{
             }
         },
         "/auth/telegram": {
-            "post": {
+            "get": {
                 "produces": [
                     "application/json"
                 ],

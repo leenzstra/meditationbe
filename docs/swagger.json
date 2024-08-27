@@ -201,7 +201,7 @@
             }
         },
         "/auth/telegram": {
-            "post": {
+            "get": {
                 "produces": [
                     "application/json"
                 ],
