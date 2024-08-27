@@ -6,7 +6,7 @@
         "contact": {},
         "version": "0.0.1"
     },
-    "host": "localhost:80",
+    "host": "meditationbe.onrender.com",
     "basePath": "/api",
     "paths": {
         "/audio/delete": {
@@ -211,13 +211,39 @@
                 "summary": "Telegram auth",
                 "parameters": [
                     {
-                        "description": "user creds",
-                        "name": "login",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/tgauth.Credentials"
-                        }
+                        "type": "integer",
+                        "name": "auth_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "first_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "hash",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "last_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "photo_url",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "username",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -347,32 +373,6 @@
                 },
                 "tg_id": {
                     "type": "integer"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "tgauth.Credentials": {
-            "type": "object",
-            "properties": {
-                "auth_date": {
-                    "type": "integer"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "hash": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "last_name": {
-                    "type": "string"
-                },
-                "photo_url": {
-                    "type": "string"
                 },
                 "username": {
                     "type": "string"

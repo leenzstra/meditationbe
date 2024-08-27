@@ -217,13 +217,39 @@ const docTemplate = `{
                 "summary": "Telegram auth",
                 "parameters": [
                     {
-                        "description": "user creds",
-                        "name": "login",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/tgauth.Credentials"
-                        }
+                        "type": "integer",
+                        "name": "auth_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "first_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "hash",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "last_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "photo_url",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "username",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -358,32 +384,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        },
-        "tgauth.Credentials": {
-            "type": "object",
-            "properties": {
-                "auth_date": {
-                    "type": "integer"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "hash": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "last_name": {
-                    "type": "string"
-                },
-                "photo_url": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
         }
     },
     "securityDefinitions": {
@@ -398,7 +398,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.0.1",
-	Host:             "localhost:80",
+	Host:             "meditationbe.onrender.com",
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Meditation API",

@@ -11,13 +11,13 @@ import (
 var ErrInvalidCredentials = errors.New("invalid telegram credentials")
 
 type Credentials struct {
-	ID        int64  `json:"id"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Username  string `json:"username"`
-	PhotoURL  string `json:"photo_url"`
-	AuthDate  int64  `json:"auth_date"`
-	Hash      string `json:"hash"`
+	ID        int64  `json:"id" query:"id"`
+	FirstName string `json:"first_name" query:"first_name"`
+	LastName  string `json:"last_name" query:"last_name"`
+	Username  string `json:"username" query:"username"`
+	PhotoURL  string `json:"photo_url" query:"photo_url"`
+	AuthDate  int64  `json:"auth_date" query:"auth_date"`
+	Hash      string `json:"hash" query:"hash"`
 }
 
 func (c *Credentials) String() string {
@@ -38,7 +38,7 @@ func (c *Credentials) String() string {
 	return s
 }
 
-func (c *Credentials) Verify(token []byte) error { 
+func (c *Credentials) Verify(token []byte) error {
 	var (
 		secret      = sha256.Sum256(token)
 		checkString = c.String()

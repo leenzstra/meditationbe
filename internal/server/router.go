@@ -56,7 +56,7 @@ func setupRoutes(router *fiber.App, db *database.Database, logger *zap.Logger) {
 	// routes
 	api := router.Group("/api")
 
-	api.Post("/auth/telegram", root.TelegramAuth)
+	api.Get("/auth/telegram", root.TelegramAuth)
 	api.Get("/health", root.Status) 
 	
 	api.Get("/me", authRequired, root.GetUser)

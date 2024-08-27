@@ -40,24 +40,7 @@ definitions:
       username:
         type: string
     type: object
-  tgauth.Credentials:
-    properties:
-      auth_date:
-        type: integer
-      first_name:
-        type: string
-      hash:
-        type: string
-      id:
-        type: integer
-      last_name:
-        type: string
-      photo_url:
-        type: string
-      username:
-        type: string
-    type: object
-host: localhost:80
+host: meditationbe.onrender.com
 info:
   contact: {}
   description: Meditation API spec
@@ -183,12 +166,27 @@ paths:
   /auth/telegram:
     post:
       parameters:
-      - description: user creds
-        in: body
-        name: login
-        required: true
-        schema:
-          $ref: '#/definitions/tgauth.Credentials'
+      - in: query
+        name: auth_date
+        type: integer
+      - in: query
+        name: first_name
+        type: string
+      - in: query
+        name: hash
+        type: string
+      - in: query
+        name: id
+        type: integer
+      - in: query
+        name: last_name
+        type: string
+      - in: query
+        name: photo_url
+        type: string
+      - in: query
+        name: username
+        type: string
       produces:
       - application/json
       responses:
