@@ -12,9 +12,9 @@ import (
 )
 
 type AudioRepository interface {
-	Get(ctx context.Context, uuid uuid.UUID) (*domain.Audio, error)
+	Get(ctx context.Context, id uuid.UUID) (*domain.Audio, error)
 	GetAll(ctx context.Context) ([]*domain.Audio, error)
-	Delete(ctx context.Context, uuid uuid.UUID) error
+	Delete(ctx context.Context, id uuid.UUID) error
 	Update(ctx context.Context, audio *domain.Audio) error
 	Add(ctx context.Context, audio *domain.Audio) error
 }
@@ -26,22 +26,22 @@ type audioRepository struct {
 // Add implements AudioRepository.
 func (r *audioRepository) Add(ctx context.Context, audio *domain.Audio) error {
 	sql, args, err := r.db.Builder.
-		Insert("audio").Columns("uuid", "name", "description", "path").
-		Values(audio.UUID.String(), audio.Name, audio.Description, audio.Path).ToSql()
-	if err != nil { 
-		return err 
-	} 
+		Insert("audio").Columns("id", "name", "description", "path", "owner").
+		Values(audio.ID.String(), audio.Name, audio.Description, audio.Path, audio.Owner).ToSql()
+	if err != nil {
+		return err
+	}
 
-	r.db.Logger.Debug(fmt.Sprintf("%v %v", sql, args)) 
+	r.db.Logger.Debug(fmt.Sprintf("%v %v", sql, args))
 
 	_, err = r.db.Pool.Exec(ctx, sql, args...)
 	return err
 }
 
 // Delete implements AudioRepository.
-func (r *audioRepository) Delete(ctx context.Context, uuid uuid.UUID) error {
+func (r *audioRepository) Delete(ctx context.Context, id uuid.UUID) error {
 	sql, args, err := r.db.Builder.
-		Delete("audio").Where(sq.Eq{"uuid": uuid}).ToSql()
+		Delete("audio").Where(sq.Eq{"id": id}).ToSql()
 	if err != nil {
 		return err
 	}
@@ -51,9 +51,9 @@ func (r *audioRepository) Delete(ctx context.Context, uuid uuid.UUID) error {
 }
 
 // Get implements AudioRepository.
-func (r *audioRepository) Get(ctx context.Context, uuid uuid.UUID) (*domain.Audio, error) {
+func (r *audioRepository) Get(ctx context.Context, id uuid.UUID) (*domain.Audio, error) {
 	sql, args, err := r.db.Builder.
-		Select("*").From("audio").Where(sq.Eq{"uuid": uuid}).ToSql()
+		Select("*").From("audio").Where(sq.Eq{"id": id}).ToSql()
 	if err != nil {
 		return nil, err
 	}
@@ -95,12 +95,13 @@ func (r *audioRepository) GetAll(ctx context.Context) ([]*domain.Audio, error) {
 // Update implements AudioRepository.
 func (r *audioRepository) Update(ctx context.Context, audio *domain.Audio) error {
 	setValues := map[string]interface{}{
-		"name": audio.Name,
+		"name":        audio.Name,
 		"description": audio.Description,
-		"path": audio.Path,
+		"path":        audio.Path,
+		"owner":       audio.Owner,
 	}
 	sql, args, err := r.db.Builder.
-		Update("audio").SetMap(setValues).Where(sq.Eq{"uuid": audio.UUID.String()}).ToSql()
+		Update("audio").SetMap(setValues).Where(sq.Eq{"id": audio.ID.String()}).ToSql()
 	if err != nil {
 		return err
 	}

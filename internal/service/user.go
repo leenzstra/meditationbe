@@ -2,103 +2,85 @@ package service
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"time"
 
 	"meditationbe/config"
 	"meditationbe/internal/domain"
-	"meditationbe/internal/dto"
 	"meditationbe/internal/repository"
+	tgauth "meditationbe/internal/tg_auth"
+	"meditationbe/internal/utils"
 
 	uuid "github.com/gofrs/uuid/v5"
 	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {
-	Get(ctx context.Context, email string) (*domain.User, error)
-	GetByUUID(ctx context.Context, uuid uuid.UUID) (*domain.User, error)
-	Add(ctx context.Context, user *domain.User) error
-	Register(ctx context.Context, user *dto.UserRegisterPayload) error
-	Login(ctx context.Context, user *dto.UserLoginPayload) (string, error)
+	GetByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	Auth(ctx context.Context, creds *tgauth.Credentials) (string, error)
 }
 
 type userService struct {
 	userRepo repository.UserRepository
 }
 
-func (u *userService) Add(ctx context.Context, user *domain.User) error {
-	return u.userRepo.Add(ctx, user)
-}
-
-func (u *userService) Login(ctx context.Context, user *dto.UserLoginPayload) (string, error) {
-	foundUser, err := u.Get(ctx, user.Email)
-	if err != nil {
-		return "", err 
+func (u *userService) Auth(ctx context.Context, creds *tgauth.Credentials) (string, error) {
+	if err := creds.Verify([]byte(config.GetConfig().BotToken)); err != nil {
+		return "", err
 	}
 
-	if !u.checkPasswordHash(user.Password, foundUser.PassHash) {
-		return "", fmt.Errorf("invalud password")
+	foundUser, err := u.userRepo.GetByTgID(ctx, creds.ID)
+
+	switch {
+	case errors.Is(err, repository.ErrNotFound):
+		err = u.register(ctx, creds)
+		if err != nil {
+			return "", err
+		}
+
+		foundUser, err = u.userRepo.GetByTgID(ctx, creds.ID)
+		if err != nil {
+			return "", err
+		}
+	case err != nil:
+		return "", err
 	}
 
-	// Create claims
 	claims := jwt.MapClaims{
-		"sub":   foundUser.UUID.String(),
-		"email": foundUser.Email,
+		"sub":   foundUser.ID.String(),
 		"admin": foundUser.Role == "admin",
 		"exp":   time.Now().Add(time.Hour * 24 * 30).Unix(),
 	}
 
-	// Create token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	// Generate encoded token
-	tokenString, err := token.SignedString([]byte(config.GetConfig().JWTSecret))
-	if err != nil {
-		return "", err
-	}
-
-	return tokenString, nil
+	return utils.GenerateJWT(claims, []byte(config.GetConfig().JWTSecret))
 }
 
-func (u *userService) Register(ctx context.Context, user *dto.UserRegisterPayload) error {
+func (u *userService) register(ctx context.Context, creds *tgauth.Credentials) error {
 	userUuid, err := uuid.NewV4()
 	if err != nil {
 		return err
 	}
 
-	passHash, err := u.hashPassword(user.Password)
-	if err != nil {
-		return err
-	}
-
 	newUser := &domain.User{
-		UUID:     userUuid,
-		Email:    user.Email,
-		PassHash: string(passHash),
-		Role:     "user",
+		ID:        userUuid,
+		TgID:      creds.ID,
+		Username:  creds.Username,
+		FirstName: creds.FirstName,
+		LastName:  creds.LastName,
+		PhotoUrl:  creds.PhotoURL,
+		Provider:  "telegram",
+		Role:      "user",
 	}
 
-	return u.Add(ctx, newUser)
-
+	return u.userRepo.Add(ctx, newUser)
 }
 
-func (u *userService) Get(ctx context.Context, email string) (*domain.User, error) {
-	return u.userRepo.Get(ctx, email)
+func (u *userService) GetByUsername(ctx context.Context, username string) (*domain.User, error) {
+	return u.userRepo.GetByUsername(ctx, username)
 }
 
-func (u *userService) GetByUUID(ctx context.Context, uuid uuid.UUID) (*domain.User, error) {
-	return u.userRepo.GetByUUID(ctx, uuid)
-}
-
-func (u *userService) hashPassword(pass string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(pass), 14)
-	return string(bytes), err
-}
-
-func (u *userService) checkPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+func (u *userService) GetByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
+	return u.userRepo.GetByID(ctx, id)
 }
 
 func NewUserService(repo repository.UserRepository) UserService {

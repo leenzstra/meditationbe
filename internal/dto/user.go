@@ -1,21 +1,17 @@
 package dto
 
-import "github.com/gofrs/uuid/v5"
-
-type UserRegisterPayload struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type UserLoginPayload struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+import (
+	"github.com/gofrs/uuid/v5"
+)
 
 type UserResponse struct {
-	UUID  uuid.UUID `json:"uuid"`
-	Email string    `json:"email"`
-	Role  string    `json:"role"`
+	ID        uuid.UUID `json:"id"`
+	TgID      int64     `json:"tg_id"`
+	Username  string    `json:"username"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	PhotoUrl  string    `json:"photo_url"`
+	Role      string    `json:"role"`
 }
 
 type LoginResponse struct {

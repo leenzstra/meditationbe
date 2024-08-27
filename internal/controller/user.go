@@ -18,19 +18,20 @@ import (
 //	@Success	200		{object}	dto.LoginResponse
 //	@Failure	400		{string}	string
 //	@Router		/login [post]
-func (r *RootController) Login(c *fiber.Ctx) error {
-	payload := dto.UserLoginPayload{}
-	if err := c.BodyParser(&payload); err != nil {
-		return c.SendStatus(fiber.StatusBadRequest)
-	}
+//	@deprecated
+// func (r *RootController) Login(c *fiber.Ctx) error {
+// 	payload := dto.UserLoginPayload{}
+// 	if err := c.BodyParser(&payload); err != nil {
+// 		return c.SendStatus(fiber.StatusBadRequest)
+// 	}
 
-	token, err := r.userService.Login(context.Background(), &payload)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
-	}
+// 	token, err := r.userService.Login(context.Background(), &payload)
+// 	if err != nil {
+// 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+// 	}
 
-	return c.JSON(dto.LoginResponse{Token: token})
-}
+// 	return c.JSON(dto.LoginResponse{Token: token})
+// }
 
 // Register godoc
 //
@@ -40,21 +41,22 @@ func (r *RootController) Login(c *fiber.Ctx) error {
 //	@Success	200			{string}	string
 //	@Failure	400			{string}	string
 //	@Router		/register [post]
-func (r *RootController) Register(c *fiber.Ctx) error {
-	payload := dto.UserRegisterPayload{}
-	if err := c.BodyParser(&payload); err != nil {
-		return c.SendStatus(fiber.StatusBadRequest)
-	}
+//	@deprecated
+// func (r *RootController) Register(c *fiber.Ctx) error {
+// 	payload := dto.UserRegisterPayload{}
+// 	if err := c.BodyParser(&payload); err != nil {
+// 		return c.SendStatus(fiber.StatusBadRequest)
+// 	}
 
-	r.log.Debug(payload.Email)
+// 	r.log.Debug(payload.Email)
 
-	err := r.userService.Register(context.Background(), &payload)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
-	}
+// 	err := r.userService.Register(context.Background(), &payload)
+// 	if err != nil {
+// 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+// 	}
 
-	return c.SendStatus(fiber.StatusOK)
-}
+// 	return c.SendStatus(fiber.StatusOK)
+// }
 
 // GetUser godoc
 //
@@ -81,15 +83,19 @@ func (r *RootController) GetUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("uuid parse error")
 	}
 
-	user, err := r.userService.GetByUUID(context.Background(), userUuid)
+	user, err := r.userService.GetByID(context.Background(), userUuid)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("no user found")
 	}
 
 	userResponse := dto.UserResponse{
-		UUID:  user.UUID,
-		Email: user.Email,
-		Role:  user.Role,
+		ID:        user.ID,
+		TgID:      user.TgID,
+		Username:  user.Username,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		PhotoUrl:  user.PhotoUrl,
+		Role:      user.Role,
 	}
 
 	return c.JSON(userResponse)

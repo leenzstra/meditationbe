@@ -25,13 +25,13 @@ func Run() {
 		log.Fatalf("failed to init db: %v", err)
 	}
 
-	server.NewRouter(db, logger).Listen(":8080")
+	server.NewRouter(db, logger).Listen(":80")
 }
 
 //	@title						Meditation API
 //	@version					0.0.1
 //	@description				Meditation API spec
-//	@host						localhost:8080
+//	@host						localhost:80
 //	@BasePath					/api
 //	@securityDefinitions.apikey	BearerToken
 //	@in							header 

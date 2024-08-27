@@ -1,26 +1,21 @@
 basePath: /api
 definitions:
-  controller.healthResponse:
-    properties:
-      status:
-        type: string
-      user:
-        type: string
-    type: object
   domain.Audio:
     properties:
       description:
         type: string
+      id:
+        type: string
       name:
         type: string
-      path:
+      owner:
         type: string
-      uuid:
+      path:
         type: string
     type: object
   dto.AudioDeletePayload:
     properties:
-      uuid:
+      id:
         type: string
     type: object
   dto.LoginResponse:
@@ -28,30 +23,41 @@ definitions:
       token:
         type: string
     type: object
-  dto.UserLoginPayload:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-    type: object
-  dto.UserRegisterPayload:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-    type: object
   dto.UserResponse:
     properties:
-      email:
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      photo_url:
         type: string
       role:
         type: string
-      uuid:
+      tg_id:
+        type: integer
+      username:
         type: string
     type: object
-host: meditationbe.onrender.com
+  tgauth.Credentials:
+    properties:
+      auth_date:
+        type: integer
+      first_name:
+        type: string
+      hash:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      photo_url:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:80
 info:
   contact: {}
   description: Meditation API spec
@@ -174,28 +180,15 @@ paths:
       summary: UploadAudio
       tags:
       - audio
-  /health:
-    get:
-      description: get API status
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controller.healthResponse'
-      summary: API ststus
-      tags:
-      - health
-  /login:
+  /auth/telegram:
     post:
       parameters:
-      - description: Login user
+      - description: user creds
         in: body
         name: login
         required: true
         schema:
-          $ref: '#/definitions/dto.UserLoginPayload'
+          $ref: '#/definitions/tgauth.Credentials'
       produces:
       - application/json
       responses:
@@ -207,9 +200,22 @@ paths:
           description: Bad Request
           schema:
             type: string
-      summary: Login
+      summary: Telegram auth
       tags:
       - user
+  /health:
+    get:
+      description: get API status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: API ststus
+      tags:
+      - health
   /me:
     get:
       responses:
@@ -228,27 +234,6 @@ paths:
       security:
       - BearerToken: []
       summary: GetUser
-      tags:
-      - user
-  /register:
-    post:
-      parameters:
-      - description: Register user
-        in: body
-        name: register
-        required: true
-        schema:
-          $ref: '#/definitions/dto.UserRegisterPayload'
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      summary: Register
       tags:
       - user
 securityDefinitions:

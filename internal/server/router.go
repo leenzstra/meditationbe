@@ -26,7 +26,7 @@ func NewRouter(db *database.Database, logger *zap.Logger) *fiber.App {
 	router.Use(recover.New())
 	router.Get("/swagger/*", swagger.HandlerDefault)
 
-	// router.Static("/static/audio", "audio")
+	router.Static("/static", "static")
 
 	setupRoutes(router, db, logger)
 
@@ -56,8 +56,7 @@ func setupRoutes(router *fiber.App, db *database.Database, logger *zap.Logger) {
 	// routes
 	api := router.Group("/api")
 
-	api.Post("/login", root.Login)
-	api.Post("/register", root.Register)
+	api.Post("/auth/telegram", root.TelegramAuth)
 	api.Get("/health", root.Status) 
 	
 	api.Get("/me", authRequired, root.GetUser)

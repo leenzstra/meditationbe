@@ -49,5 +49,5 @@ tasks:
 
   swag:
     cmds:
-      - swag init -d ".\cmd\{{.CLI_ARGS}}\,internal/dto,internal/domain,internal/controller"
+      - swag init -d ".\cmd\{{.CLI_ARGS}}\,internal\tg_auth,internal/dto,internal/domain,internal/controller"
       - swag fmt 

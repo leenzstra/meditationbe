@@ -11,7 +11,7 @@ import (
 )
 
 type AudioService interface {
-	Get(ctx context.Context, uuid uuid.UUID) (*domain.Audio, error)
+	Get(ctx context.Context, id uuid.UUID) (*domain.Audio, error)
 	GetAll(ctx context.Context) ([]*domain.Audio, error)
 	Delete(ctx context.Context, audio *dto.AudioDeletePayload) error
 	Update(ctx context.Context, audio *domain.Audio) error
@@ -25,18 +25,18 @@ type audioService struct {
 
 // Add implements AudioService.
 func (s *audioService) Add(ctx context.Context, audio *dto.AudioAddPayload, file *bytes.Buffer) error {
-	audioUuid, err := uuid.NewV4()
+	audioId, err := uuid.NewV4()
 	if err != nil {
 		return err
 	}
 
-	path, err := s.uploader.Upload(ctx, audioUuid, file)
+	path, err := s.uploader.Upload(ctx, audioId, file)
 	if err != nil {
 		return err
 	}
 
 	newAudio := &domain.Audio{
-		UUID:        audioUuid,
+		ID:          audioId,
 		Name:        audio.Name,
 		Description: audio.Description,
 		Path:        path,
@@ -52,12 +52,12 @@ func (s *audioService) Add(ctx context.Context, audio *dto.AudioAddPayload, file
 
 // Delete implements AudioService.
 func (s *audioService) Delete(ctx context.Context, audio *dto.AudioDeletePayload) error {
-	err := s.uploader.Delete(ctx, audio.UUID)
+	err := s.uploader.Delete(ctx, audio.ID)
 	if err != nil {
 		return err
 	}
 
-	err = s.audioRepo.Delete(ctx, audio.UUID)
+	err = s.audioRepo.Delete(ctx, audio.ID)
 	if err != nil {
 		return err
 	}
@@ -66,8 +66,8 @@ func (s *audioService) Delete(ctx context.Context, audio *dto.AudioDeletePayload
 }
 
 // Get implements AudioService.
-func (s *audioService) Get(ctx context.Context, uuid uuid.UUID) (*domain.Audio, error) {
-	return s.audioRepo.Get(ctx, uuid)
+func (s *audioService) Get(ctx context.Context, id uuid.UUID) (*domain.Audio, error) {
+	return s.audioRepo.Get(ctx, id)
 }
 
 // GetAll implements AudioService.
@@ -86,4 +86,3 @@ func NewAudioService(audioRepo repository.AudioRepository, uploader AudioUploade
 		uploader:  uploader,
 	}
 }
-

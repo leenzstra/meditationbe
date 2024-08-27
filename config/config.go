@@ -24,13 +24,15 @@ type Config struct {
 	S3SecretKey string `mapstructure:"MED_S3_SECRET_KEY"`
 	S3BucketId  string `mapstructure:"MED_S3_BUCKET_ID"`
 	S3JWT       string `mapstructure:"MED_S3_JWT"`
+
+	BotToken string `mapstructure:"MED_BOT_TOKEN"`
 }
 
 var config *Config
 
 func Init(env EnvType) {
 	var err error
-	cfg := viper.New()
+	cfg := viper.New() 
 
 	cfg.SetConfigType("env")
 	cfg.AddConfigPath("config/")

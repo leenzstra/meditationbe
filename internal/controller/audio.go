@@ -105,7 +105,7 @@ func (r *RootController) GetAudio(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
 
-	audio, err := r.audioService.Get(context.Background(), payload.UUID)
+	audio, err := r.audioService.Get(context.Background(), payload.ID)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}

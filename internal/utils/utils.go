@@ -45,5 +45,15 @@ func TokenFromHeaders(c *fiber.Ctx) (*jwt.Token, error) {
 	}
 
 	return token, nil
+}
 
+func GenerateJWT(claims jwt.MapClaims, secret []byte) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenString, err := token.SignedString(secret)
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }

@@ -206,6 +206,42 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/telegram": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Telegram auth",
+                "parameters": [
+                    {
+                        "description": "user creds",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tgauth.Credentials"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "get API status",
@@ -219,42 +255,6 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controller.healthResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/login": {
-            "post": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Login",
-                "parameters": [
-                    {
-                        "description": "Login user",
-                        "name": "login",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UserLoginPayload"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.LoginResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
                         "schema": {
                             "type": "string"
                         }
@@ -294,66 +294,25 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/register": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Register",
-                "parameters": [
-                    {
-                        "description": "Register user",
-                        "name": "register",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UserRegisterPayload"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
-        "controller.healthResponse": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "type": "string"
-                },
-                "user": {
-                    "type": "string"
-                }
-            }
-        },
         "domain.Audio": {
             "type": "object",
             "properties": {
                 "description": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
-                "path": {
+                "owner": {
                     "type": "string"
                 },
-                "uuid": {
+                "path": {
                     "type": "string"
                 }
             }
@@ -361,7 +320,7 @@ const docTemplate = `{
         "dto.AudioDeletePayload": {
             "type": "object",
             "properties": {
-                "uuid": {
+                "id": {
                     "type": "string"
                 }
             }
@@ -374,38 +333,54 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserLoginPayload": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.UserRegisterPayload": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.UserResponse": {
             "type": "object",
             "properties": {
-                "email": {
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "photo_url": {
                     "type": "string"
                 },
                 "role": {
                     "type": "string"
                 },
-                "uuid": {
+                "tg_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "tgauth.Credentials": {
+            "type": "object",
+            "properties": {
+                "auth_date": {
+                    "type": "integer"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "hash": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -423,7 +398,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.0.1",
-	Host:             "meditationbe.onrender.com",
+	Host:             "localhost:80",
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Meditation API",

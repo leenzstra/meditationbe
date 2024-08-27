@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/Masterminds/squirrel"
+	pgxuuid "github.com/jackc/pgx-gofrs-uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
-	pgxuuid "github.com/jackc/pgx-gofrs-uuid"
 )
 
 var (
@@ -23,13 +23,13 @@ type Database struct {
 func NewPgxPool(connUrl string) (*pgxpool.Pool, error) {
 	config, err := pgxpool.ParseConfig(connUrl)
 	if err != nil {
-		return nil, err 
+		return nil, err
 	}
 
 	config.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
-	pgxuuid.Register(conn.TypeMap())
-	return nil
-}
+		pgxuuid.Register(conn.TypeMap())
+		return nil
+	}
 
 	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
@@ -43,7 +43,7 @@ func New(pool *pgxpool.Pool, builder *squirrel.StatementBuilderType, logger *zap
 	logger.Info("Database started")
 	logger.Debug(pool.Config().ConnString())
 
-	return &Database{
+	return &Database{ 
 		Pool:    pool,
 		Logger:  logger,
 		Builder: builder,

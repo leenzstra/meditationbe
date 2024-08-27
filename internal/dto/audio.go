@@ -8,15 +8,15 @@ type AudioAddPayload struct {
 }
 
 type AudioDeletePayload struct {
-	UUID uuid.UUID `json:"uuid"`
+	ID uuid.UUID `json:"id"`
 }
 
 type AudioQueryPayload struct {
-	UUID uuid.UUID `json:"uuid" params:"uuid"`
+	ID uuid.UUID `json:"id" params:"id"`
 }
 
 type AudioUpdatePayload struct {
-	UUID        uuid.UUID `json:"uuid"`
+	ID          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Path        string    `json:"path"`
