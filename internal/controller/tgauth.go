@@ -17,7 +17,7 @@ import (
 //	@Param		login	query		tgauth.Credentials	true	"user creds"
 //	@Success	200		{object}	dto.LoginResponse
 //	@Failure	400		{string}	string
-//	@Router		/auth/telegram [post]
+//	@Router		/auth/telegram [get]
 func (r *RootController) TelegramAuth(c *fiber.Ctx) error {
 	payload := tgauth.Credentials{}
 	if err := c.QueryParser(&payload); err != nil && !errors.Is(err, fiber.ErrUnprocessableEntity) {
